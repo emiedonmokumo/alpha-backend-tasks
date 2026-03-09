@@ -41,3 +41,11 @@ tmp/
 # Local storage
 data/
 postgres-data/
+
+# Docker Compose dev files (local only)
+docker-compose.dev.yml
+
+backend-eng-tasks.pdf
+python_task_briefing_report.md
+ts_task_candidate_summary.md
+documentation.md

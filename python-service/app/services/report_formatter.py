@@ -3,6 +3,8 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
+from app.models.briefing import Briefing
+
 _TEMPLATE_DIR = Path(__file__).resolve().parents[1] / "templates"
 
 
@@ -18,6 +20,23 @@ class ReportFormatter:
     def render_base(self, title: str, body: str) -> str:
         template = self._env.get_template("base.html")
         return template.render(title=title, body=body, generated_at=self.generated_timestamp())
+
+    def render_briefing_report(self, briefing: Briefing) -> str:
+        """Render a briefing report to HTML."""
+        template = self._env.get_template("briefing_report.html")
+        
+        # Separate points into key_points and risks
+        key_points = [p.content for p in briefing.points if p.type == "key_point"]
+        risks = [p.content for p in briefing.points if p.type == "risk"]
+        metrics = {m.name: m.value for m in briefing.metrics}
+        
+        return template.render(
+            briefing=briefing,
+            key_points=key_points,
+            risks=risks,
+            metrics=metrics,
+            generated_at=self.generated_timestamp(),
+        )
 
     @staticmethod
     def generated_timestamp() -> str:
